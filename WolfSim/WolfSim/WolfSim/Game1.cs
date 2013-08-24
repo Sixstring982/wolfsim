@@ -16,8 +16,31 @@ namespace WolfSim
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
+
+        private static int screenNum = 0;
+        private static Screen[] screenStack;
+
+        public static void PushScreen(Screen s)
+        {
+            screenStack[screenNum++] = s;
+        }
+
+        public static Screen PopScreen(Screen s)
+        {
+            return screenStack[screenNum -= 1];
+        }
+
+        public static Screen PeekBack(int ct)
+        {
+            return screenStack[screenNum - ct];
+        }
+
+        public static Screen Peek()
+        {
+            return screenStack[screenNum];
+        }
 
         public Game1()
         {
@@ -67,10 +90,10 @@ namespace WolfSim
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
                 this.Exit();
-
-            // TODO: Add your update logic here
+            }
 
             base.Update(gameTime);
         }
