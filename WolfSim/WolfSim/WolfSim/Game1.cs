@@ -16,11 +16,14 @@ namespace WolfSim
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
+        public static int SCREENW = 1280, SCREENH = 720;
+        public static Random rand = new Random(DateTime.Now.Millisecond);
+
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
         private static int screenNum = 0;
-        private static Screen[] screenStack;
+        private static Screen[] screenStack = new Screen[32];
 
         public static void PushScreen(Screen s)
         {
@@ -39,12 +42,15 @@ namespace WolfSim
 
         public static Screen Peek()
         {
-            return screenStack[screenNum];
+            return screenStack[screenNum - 1];
         }
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            this.graphics.PreferredBackBufferWidth = SCREENW;
+            this.graphics.PreferredBackBufferHeight = SCREENH;
+            this.IsMouseVisible = true;
             Content.RootDirectory = "Content";
         }
 
@@ -56,9 +62,9 @@ namespace WolfSim
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
+            AssMan.LoadStaticAssets(Content);
+            PushScreen(new HouseScreen());
         }
 
         /// <summary>
@@ -67,10 +73,7 @@ namespace WolfSim
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -94,6 +97,10 @@ namespace WolfSim
             {
                 this.Exit();
             }
+            KVMA_Keyboard.Flip();
+            KVMA_Mouse.Flip();
+
+            Peek().Update();
 
             base.Update(gameTime);
         }
@@ -104,9 +111,13 @@ namespace WolfSim
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
-            // TODO: Add your drawing code here
+            spriteBatch.Begin();
+
+            Peek().Render(spriteBatch);
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }

@@ -1,0 +1,9 @@
+Content\Images\door1.xnb
+Content\Images\DRSHMO.xnb
+Content\Images\emptyRoom.xnb
+Content\Images\mask.xnb
+Content\Images\portrait1.xnb
+Content\Images\Parlor.xnb
+Content\Images\foyer.xnb
+Content\Images\Shed.xnb
+Content\Images\SquareRoom.xnb

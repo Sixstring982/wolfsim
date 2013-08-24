@@ -107,11 +107,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssMan.cs" />
+    <Compile Include="HouseScreen.cs" />
     <Compile Include="KVMA_Keyboard.cs" />
+    <Compile Include="KVMA_Mouse.cs" />
+    <Compile Include="Map.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Room.cs" />
     <Compile Include="Screen.cs" />
+    <Compile Include="Util.cs" />
+    <Compile Include="VecDir.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

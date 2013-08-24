@@ -4,3 +4,12 @@ C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\WolfSim.exe
 C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\WolfSim.pdb
 C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\obj\x86\Debug\WolfSim.exe
 C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\obj\x86\Debug\WolfSim.pdb
+C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\door1.xnb
+C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\DRSHMO.xnb
+C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\emptyRoom.xnb
+C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\mask.xnb
+C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\portrait1.xnb
+C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\Parlor.xnb
+C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\foyer.xnb
+C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\Shed.xnb
+C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\SquareRoom.xnb
