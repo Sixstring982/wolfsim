@@ -56,6 +56,22 @@ namespace WolfSim
             }
         }
 
+        public Room NextLinker()
+        {
+            int[] iota = Util.ShuffledIota(exitPoints.Count);
+            for (int i = 0; i < exitPoints.Count; i++)
+            {
+                if (exitPoints[iota[i]].next != null)
+                {
+                    if (exitPoints[iota[i]].next.ExitsLeft() > 0)
+                    {
+                        return exitPoints[iota[i]].next;
+                    }
+                }
+            }
+            return null;
+        }
+
         public Room NearestExit(Vector2 location)
         {
             RoomExit nearest = null;
@@ -119,6 +135,7 @@ namespace WolfSim
             {
                 r.AddParent(this, e.location.dir);
                 e.next = r;
+                return true;
             }
             return false;
         }
@@ -301,6 +318,118 @@ namespace WolfSim
             exitPoints.Add(new RoomExit(6, 182, Direction.W));
             exitPoints.Add(new RoomExit(390, 182, Direction.E));
             exitPoints.Add(new RoomExit(83, 394, Direction.S));
+            SetBackgroundParams();
+        }
+    }
+
+    class Shed : Room
+    {
+        public Shed()
+        {
+            this.maxExits = 1;
+            this.backgroundAsset = IAsset.Room_Shed;
+            exitPoints.Add(new RoomExit(117, 43, Direction.N));
+            exitPoints.Add(new RoomExit(10, 157, Direction.W));
+            exitPoints.Add(new RoomExit(230, 157, Direction.E));
+            exitPoints.Add(new RoomExit(110, 230, Direction.S));
+            SetBackgroundParams();
+        }
+    }
+
+    class Bedroom : Room
+    {
+        public Bedroom()
+        {
+            this.maxExits = 2;
+            this.backgroundAsset = IAsset.Room_Vertical;
+            exitPoints.Add(new RoomExit(161, 70, Direction.N));
+            exitPoints.Add(new RoomExit(10, 216, Direction.W));
+            exitPoints.Add(new RoomExit(410, 216, Direction.E));
+            exitPoints.Add(new RoomExit(200, 400, Direction.S));
+            SetBackgroundParams();
+        }
+    }
+
+    class Breakfast : Room
+    {
+        public Breakfast()
+        {
+            this.maxExits = 2;
+            this.backgroundAsset = IAsset.Room_Vertical;
+            exitPoints.Add(new RoomExit(161, 70, Direction.N));
+            exitPoints.Add(new RoomExit(10, 216, Direction.W));
+            exitPoints.Add(new RoomExit(410, 216, Direction.E));
+            exitPoints.Add(new RoomExit(200, 400, Direction.S));
+            SetBackgroundParams();
+        }
+    }
+
+    class BilliardRoom : Room
+    {
+        public BilliardRoom()
+        {
+            this.maxExits = 2;
+            this.backgroundAsset = IAsset.Room_Square;
+            exitPoints.Add(new RoomExit(189, 41, Direction.N));
+            exitPoints.Add(new RoomExit(6, 182, Direction.W));
+            exitPoints.Add(new RoomExit(390, 182, Direction.E));
+            exitPoints.Add(new RoomExit(83, 394, Direction.S));
+            SetBackgroundParams();
+        }
+    }
+
+    class MasterBedroom : Room
+    {
+        public MasterBedroom()
+        {
+            this.maxExits = 2;
+            this.backgroundAsset = IAsset.Room_Square;
+            exitPoints.Add(new RoomExit(189, 41, Direction.N));
+            exitPoints.Add(new RoomExit(6, 182, Direction.W));
+            exitPoints.Add(new RoomExit(390, 182, Direction.E));
+            exitPoints.Add(new RoomExit(83, 394, Direction.S));
+            SetBackgroundParams();
+        }
+    }
+
+    class Lab : Room
+    {
+        public Lab()
+        {
+            this.maxExits = 2;
+            this.backgroundAsset = IAsset.Room_Horizontal;
+            exitPoints.Add(new RoomExit(101, 43, Direction.N));
+            exitPoints.Add(new RoomExit(10, 158, Direction.W));
+            exitPoints.Add(new RoomExit(590, 182, Direction.E));
+            exitPoints.Add(new RoomExit(538, 230, Direction.S));
+            SetBackgroundParams();
+        }
+    }
+
+    class Kitchen : Room
+    {
+        public Kitchen()
+        {
+            this.maxExits = 2;
+            this.backgroundAsset = IAsset.Room_Horizontal;
+            exitPoints.Add(new RoomExit(101, 43, Direction.N));
+            exitPoints.Add(new RoomExit(10, 158, Direction.W));
+            exitPoints.Add(new RoomExit(590, 182, Direction.E));
+            exitPoints.Add(new RoomExit(538, 230, Direction.S));
+            SetBackgroundParams();
+        }
+    }
+
+    class SittingRoom : Room
+    {
+        public SittingRoom()
+        {
+            this.maxExits = 2;
+            this.backgroundAsset = IAsset.Room_Horizontal;
+            exitPoints.Add(new RoomExit(101, 43, Direction.N));
+            exitPoints.Add(new RoomExit(10, 158, Direction.W));
+            exitPoints.Add(new RoomExit(590, 182, Direction.E));
+            exitPoints.Add(new RoomExit(538, 230, Direction.S));
             SetBackgroundParams();
         }
     }

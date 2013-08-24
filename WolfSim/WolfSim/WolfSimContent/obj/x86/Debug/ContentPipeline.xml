@@ -71,7 +71,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\Shed.xnb</Output>
-      <Time>2013-08-24T13:03:31.946-06:00</Time>
+      <Time>2013-08-24T14:55:43.188-06:00</Time>
     </Item>
     <Item>
       <Source>Images\SquareRoom.png</Source>
@@ -81,6 +81,15 @@
       <Options>None</Options>
       <Output>C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\SquareRoom.xnb</Output>
       <Time>2013-08-24T13:15:03.678-06:00</Time>
+    </Item>
+    <Item>
+      <Source>Images\Horizontal.png</Source>
+      <Name>Images\Horizontal</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\Horizontal.xnb</Output>
+      <Time>2013-08-24T15:39:33.6045454-06:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>

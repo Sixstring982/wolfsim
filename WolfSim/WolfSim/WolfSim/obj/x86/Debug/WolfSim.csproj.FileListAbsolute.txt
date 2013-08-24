@@ -13,3 +13,4 @@ C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\Pa
 C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\foyer.xnb
 C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\Shed.xnb
 C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\SquareRoom.xnb
+C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\Horizontal.xnb
