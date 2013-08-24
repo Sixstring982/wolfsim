@@ -1,0 +1,6 @@
+C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\WolfSim.exe
+C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\WolfSim.pdb
+C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\obj\x86\Debug\WolfSim.exe
+C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\obj\x86\Debug\WolfSim.pdb
