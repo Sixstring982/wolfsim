@@ -199,6 +199,7 @@ namespace WolfSim
 
         public void Update(Player p)
         {
+            bool moved = false;
             if (KVMA_Keyboard.KeyDown(Keys.W))
             {
                 SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.N, Player.speed));
@@ -206,6 +207,8 @@ namespace WolfSim
                 {
                     SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.S, Player.speed));
                 }
+                moved = true;
+                p.SetState(PlayerState.WalkNorth);
             }
             if (KVMA_Keyboard.KeyDown(Keys.S))
             {
@@ -214,6 +217,8 @@ namespace WolfSim
                 {
                     SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.N, Player.speed));
                 }
+                moved = true;
+                p.SetState(PlayerState.WalkSouth);
             }
             if (KVMA_Keyboard.KeyDown(Keys.A))
             {
@@ -222,6 +227,8 @@ namespace WolfSim
                 {
                     SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.E, Player.speed));
                 }
+                moved = true;
+                p.SetState(PlayerState.WalkWest);
             }
             if (KVMA_Keyboard.KeyDown(Keys.D))
             {
@@ -230,6 +237,12 @@ namespace WolfSim
                 {
                     SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.W, Player.speed));
                 }
+                moved = true;
+                p.SetState(PlayerState.WalkEast);
+            }
+            if (!moved)
+            {
+                p.SetState(PlayerState.Idle);
             }
         }
 

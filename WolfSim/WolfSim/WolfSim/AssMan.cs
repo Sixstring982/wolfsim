@@ -13,7 +13,14 @@ namespace WolfSim
 {
     enum IAsset
     {
-        Player_SouthWest,
+        Player_WalkSouth1,
+        Player_WalkSouth2,
+        Player_WalkEast1,
+        Player_WalkEast2,
+        Player_WalkWest1,
+        Player_WalkWest2,
+        Player_WalkNorth1,
+        Player_WalkNorth2,
         Room_Vertical,
         Room_Foyer,
         Room_Square,
@@ -33,7 +40,7 @@ namespace WolfSim
             //Code here looks like this:
             // IDict.Add(IAsset.ASSET_NAME_HERE, c.Load<Texture2D>("ASSET_STRING_FROM_CONTENT_HERE"));
 
-            IDict.Add(IAsset.Player_SouthWest, c.Load<Texture2D>("Images/WolfmanStillFront"));
+            IDict.Add(IAsset.Player_WalkSouth1, c.Load<Texture2D>("Images/WolfmanStillFront"));
             IDict.Add(IAsset.Room_Vertical, c.Load<Texture2D>("Images/Parlor"));
             IDict.Add(IAsset.Room_Foyer, c.Load<Texture2D>("Images/Foyer"));
             IDict.Add(IAsset.Room_Square, c.Load<Texture2D>("Images/SquareRoom"));
@@ -42,6 +49,11 @@ namespace WolfSim
             IDict.Add(IAsset.Mask, c.Load<Texture2D>("Images/mask"));
             IDict.Add(IAsset.Door1, c.Load<Texture2D>("Images/door1"));
             IDict.Add(IAsset.Foyer_Railing, c.Load<Texture2D>("Images/railing"));
+            IDict.Add(IAsset.Player_WalkEast1, c.Load<Texture2D>("Images/wolfManStillRight"));
+            IDict.Add(IAsset.Player_WalkEast2, c.Load<Texture2D>("Images/wolfManWalkRight"));
+            IDict.Add(IAsset.Player_WalkWest1, c.Load<Texture2D>("Images/wolfManStillLeft"));
+            IDict.Add(IAsset.Player_WalkWest2, c.Load<Texture2D>("Images/wolfManWalkLeft"));
+            IDict.Add(IAsset.Player_WalkNorth1, c.Load<Texture2D>("Images/wolfManStillRear"));
         }
 
         public static Texture2D Get(IAsset a)

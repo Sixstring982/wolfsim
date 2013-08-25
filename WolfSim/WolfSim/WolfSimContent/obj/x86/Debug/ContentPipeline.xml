@@ -109,6 +109,51 @@
       <Output>C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\railing.xnb</Output>
       <Time>2013-08-24T18:38:00.3-06:00</Time>
     </Item>
+    <Item>
+      <Source>Images\wolfManStillRight.png</Source>
+      <Name>Images\wolfManStillRight</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\wolfManStillRight.xnb</Output>
+      <Time>2013-08-24T19:10:51.4524-06:00</Time>
+    </Item>
+    <Item>
+      <Source>Images\wolfManWalkRight.png</Source>
+      <Name>Images\wolfManWalkRight</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\wolfManWalkRight.xnb</Output>
+      <Time>2013-08-24T19:10:51.4564-06:00</Time>
+    </Item>
+    <Item>
+      <Source>Images\WolfManStillRear.png</Source>
+      <Name>Images\WolfManStillRear</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\WolfManStillRear.xnb</Output>
+      <Time>2013-08-24T19:13:01.0008-06:00</Time>
+    </Item>
+    <Item>
+      <Source>Images\wolfManStillLeft.png</Source>
+      <Name>Images\wolfManStillLeft</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\wolfManStillLeft.xnb</Output>
+      <Time>2013-08-24T19:16:09.8696-06:00</Time>
+    </Item>
+    <Item>
+      <Source>Images\wolfManWalkLeft.png</Source>
+      <Name>Images\wolfManWalkLeft</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\wolfManWalkLeft.xnb</Output>
+      <Time>2013-08-24T19:16:09.8646-06:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <TargetPlatform>Windows</TargetPlatform>
