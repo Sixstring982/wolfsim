@@ -23,6 +23,12 @@ namespace WolfSim
         Player_WalkNorth1,
         Player_WalkNorth2,
         Player_Dead,
+        Player_Eat1,
+        Player_Eat2,
+        Player_Eat3,
+        Player_Eat4,
+        Player_Eat5,
+        Player_Eat6,
         Room_Vertical,
         Room_Foyer,
         Room_Square,
@@ -34,6 +40,7 @@ namespace WolfSim
         Foyer_Railing,
         Portrait1,
         Bookshelf,
+        Bookshelf_Burned,
         Column_Unarmed,
         Column_East,
         Column_West,
@@ -50,7 +57,39 @@ namespace WolfSim
         Laser_West,
         SplashScreen,
         Barrel,
-        Plunger
+        Plunger,
+        Toilet,
+        Toilet_Clogged,
+        Fireball,
+        Matchbox,
+        Mop,
+        Desk,
+        Confuscious,
+        Couch,
+        Sun,
+        Moon,
+        Father,
+        Bed,
+        Bed_Sleep,
+        Bathroom,
+        Mother,
+        PoolTable,
+        PoolPanel,
+        BlackBall,
+        BlueBallStripe,
+        BlueBall,
+        YellowBallStripe,
+        YellowBall,
+        RedBallStripe,
+        RedBall,
+        DefenestratedPoolTable,
+        Goat,
+        Plant,
+        Chair,
+        TableSuck,
+        Fountain1,
+        Fountain2,
+        Fountain3
     }
 
     enum SAsset
@@ -62,13 +101,14 @@ namespace WolfSim
         Mystery,
         Flap1,
         Flap2,
-        Flap3
+        Flap3,
+        Crunch,
     }
 
     class AssMan
     {
-        public static Dictionary<IAsset, Texture2D> IDict = new Dictionary<IAsset, Texture2D>();
-        public static Dictionary<SAsset, SoundEffect> SDict = new Dictionary<SAsset, SoundEffect>();
+        private static Dictionary<IAsset, Texture2D> IDict = new Dictionary<IAsset, Texture2D>();
+        private static Dictionary<SAsset, SoundEffect> SDict = new Dictionary<SAsset, SoundEffect>();
 
         public static SpriteFont victorianFont;
         public static SpriteFont victorianSmall;
@@ -80,7 +120,7 @@ namespace WolfSim
 
             IDict.Add(IAsset.Player_Idle, c.Load<Texture2D>("Images/WolfmanStillFront"));
             IDict.Add(IAsset.Room_Vertical, c.Load<Texture2D>("Images/Parlor"));
-            IDict.Add(IAsset.Room_Foyer, c.Load<Texture2D>("Images/Foyer"));
+            IDict.Add(IAsset.Room_Foyer, c.Load<Texture2D>("Images/Foyer2"));
             IDict.Add(IAsset.Room_Square, c.Load<Texture2D>("Images/SquareRoom"));
             IDict.Add(IAsset.Room_Horizontal, c.Load<Texture2D>("Images/Horizontal"));
             IDict.Add(IAsset.Room_Shed, c.Load<Texture2D>("Images/Shed"));
@@ -98,6 +138,7 @@ namespace WolfSim
             IDict.Add(IAsset.Player_WalkNorth2, c.Load<Texture2D>("Images/wolfManWalkRear2"));
             IDict.Add(IAsset.Portrait1, c.Load<Texture2D>("Images/portrait1"));
             IDict.Add(IAsset.Bookshelf, c.Load<Texture2D>("Images/bookshelf"));
+            IDict.Add(IAsset.Bookshelf_Burned, c.Load<Texture2D>("Images/bookshelf_burned"));
             IDict.Add(IAsset.Column_Unarmed, c.Load<Texture2D>("Images/column"));
             IDict.Add(IAsset.Book_Blue_Open, c.Load<Texture2D>("Images/BlueFB_OPEN"));
             IDict.Add(IAsset.Book_Blue_Closed, c.Load<Texture2D>("Images/BlueFB_CLOSED"));
@@ -113,9 +154,47 @@ namespace WolfSim
             IDict.Add(IAsset.Laser_East, c.Load<Texture2D>("Images/LAZR_EAST_1"));
             IDict.Add(IAsset.Laser_South, c.Load<Texture2D>("Images/LAZR_SOUTH_1"));
             IDict.Add(IAsset.Laser_West, c.Load<Texture2D>("Images/LAZR_WEST_1"));
-            IDict.Add(IAsset.SplashScreen, c.Load<Texture2D>("Images/TITLEWAT"));
+            IDict.Add(IAsset.SplashScreen, c.Load<Texture2D>("Images/SPLASHFINAL"));
             IDict.Add(IAsset.Barrel, c.Load<Texture2D>("Images/Barrel"));
             IDict.Add(IAsset.Plunger, c.Load<Texture2D>("Images/Plunger"));
+            IDict.Add(IAsset.Toilet, c.Load<Texture2D>("Images/Toilet"));
+            IDict.Add(IAsset.Toilet_Clogged, c.Load<Texture2D>("Images/Toilet_DISARMED"));
+            IDict.Add(IAsset.Fireball, c.Load<Texture2D>("Images/FIRE_NORTH"));
+            IDict.Add(IAsset.Matchbox, c.Load<Texture2D>("Images/matchBox"));
+            IDict.Add(IAsset.Mop, c.Load<Texture2D>("Images/Mop"));
+            IDict.Add(IAsset.Desk, c.Load<Texture2D>("Images/Desk"));
+            IDict.Add(IAsset.Confuscious, c.Load<Texture2D>("Images/Confuscious"));
+            IDict.Add(IAsset.Couch, c.Load<Texture2D>("Images/Couch"));
+            IDict.Add(IAsset.Sun, c.Load<Texture2D>("Images/Sun"));
+            IDict.Add(IAsset.Moon, c.Load<Texture2D>("Images/Moon"));
+            IDict.Add(IAsset.Father, c.Load<Texture2D>("Images/Man"));
+            IDict.Add(IAsset.Bed, c.Load<Texture2D>("Images/bed"));
+            IDict.Add(IAsset.Bed_Sleep, c.Load<Texture2D>("Images/bed-sleep"));
+            IDict.Add(IAsset.Player_Eat1, c.Load<Texture2D>("Images/WolfmanStillEatAni1"));
+            IDict.Add(IAsset.Player_Eat2, c.Load<Texture2D>("Images/WolfmanStillEatAni2"));
+            IDict.Add(IAsset.Player_Eat3, c.Load<Texture2D>("Images/WolfmanStillEatAni3"));
+            IDict.Add(IAsset.Player_Eat4, c.Load<Texture2D>("Images/WolfmanStillEatAni4"));
+            IDict.Add(IAsset.Player_Eat5, c.Load<Texture2D>("Images/WolfmanStillEatAni5"));
+            IDict.Add(IAsset.Player_Eat6, c.Load<Texture2D>("Images/WolfmanStillEatAni6"));
+            IDict.Add(IAsset.Bathroom, c.Load<Texture2D>("Images/Bathroom2"));
+            IDict.Add(IAsset.Mother, c.Load<Texture2D>("Images/Lady"));
+            IDict.Add(IAsset.PoolTable, c.Load<Texture2D>("Images/Billiards"));
+            IDict.Add(IAsset.PoolPanel, c.Load<Texture2D>("Images/PoolEq"));
+            IDict.Add(IAsset.BlackBall, c.Load<Texture2D>("Images/BlackBall"));
+            IDict.Add(IAsset.BlueBall, c.Load<Texture2D>("Images/BlueBall"));
+            IDict.Add(IAsset.BlueBallStripe, c.Load<Texture2D>("Images/BlueBallStripe"));
+            IDict.Add(IAsset.YellowBall, c.Load<Texture2D>("Images/YellowBall"));
+            IDict.Add(IAsset.YellowBallStripe, c.Load<Texture2D>("Images/YellowBallStripe"));
+            IDict.Add(IAsset.RedBall, c.Load<Texture2D>("Images/RedBall"));
+            IDict.Add(IAsset.RedBallStripe, c.Load<Texture2D>("Images/RedBallStripe"));
+            IDict.Add(IAsset.DefenestratedPoolTable, c.Load<Texture2D>("Images/DefnPoolTable"));
+            IDict.Add(IAsset.Goat, c.Load<Texture2D>("Images/Goat"));
+            IDict.Add(IAsset.Plant, c.Load<Texture2D>("Images/Plant"));
+            IDict.Add(IAsset.Chair, c.Load<Texture2D>("Images/Chair"));
+            IDict.Add(IAsset.TableSuck, c.Load<Texture2D>("Images/tablesuck"));
+            IDict.Add(IAsset.Fountain1, c.Load<Texture2D>("Images/Fountain1"));
+            IDict.Add(IAsset.Fountain2, c.Load<Texture2D>("Images/Fountain2"));
+            IDict.Add(IAsset.Fountain3, c.Load<Texture2D>("Images/Fountain3"));
 
             victorianFont = c.Load<SpriteFont>("Victorian");
             victorianSmall = c.Load<SpriteFont>("VictorianSmall");
@@ -128,6 +207,7 @@ namespace WolfSim
             SDict.Add(SAsset.Flap1, c.Load<SoundEffect>("Sounds/Flap1"));
             SDict.Add(SAsset.Flap2, c.Load<SoundEffect>("Sounds/Flap2"));
             SDict.Add(SAsset.Flap3, c.Load<SoundEffect>("Sounds/Flap3"));
+            SDict.Add(SAsset.Crunch, c.Load<SoundEffect>("Sounds/Crunch"));
 
             
         }

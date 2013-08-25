@@ -18,13 +18,16 @@ namespace WolfSim
         WalkEast,
         WalkWest,
         WalkSouth,
-        Dead
+        Dead,
+        Eating
     }
 
     enum Item
     {
         None,
         Plunger,
+        Mop,
+        Goat,
         Matchbox //MUST BE THE END OF THE ENUM
     }
 
@@ -38,6 +41,12 @@ namespace WolfSim
         private PlayerState state;
         Dictionary<PlayerState, Animation> anims;
         private Item heldItem = Item.None;
+        private string killString = "";
+
+        public Item GetItem()
+        {
+            return heldItem;
+        }
 
         public Item PickUpItem(Item i)
         {
@@ -80,6 +89,16 @@ namespace WolfSim
                 {
                     IAsset.Player_Dead
                 }, animSpeed));
+            anims.Add(PlayerState.Eating, new Animation(
+                new IAsset[]
+                {
+                    IAsset.Player_Eat1,
+                    IAsset.Player_Eat2,
+                    IAsset.Player_Eat3,
+                    IAsset.Player_Eat4,
+                    IAsset.Player_Eat5,
+                    IAsset.Player_Eat6
+                }, 2));
         }
 
         public Rectangle GetRect()
@@ -87,16 +106,30 @@ namespace WolfSim
             return new Rectangle(0, 0, AssMan.Get(IAsset.Player_Idle).Width, AssMan.Get(IAsset.Player_Idle).Height);
         }
 
-        public void Kill()
+        public void Kill(string killObject)
         {
+            killString = "Killed by " + killObject;
             alive = false;
             this.state = PlayerState.Dead;
             AssMan.Get(SAsset.Death).Play();
         }
 
+        public void Eat()
+        {
+            state = PlayerState.Eating;
+            AssMan.Get(SAsset.Crunch).Play();
+            AssMan.Get(SAsset.Crunch).Play();
+            SplashScreen.PeopleEaten++;
+        }
+
         public void SetState(PlayerState state)
         {
             this.state = state;
+        }
+
+        public PlayerState GetState()
+        {
+            return state;
         }
 
         public void Update(Room currentRoom)
@@ -121,6 +154,10 @@ namespace WolfSim
             anims[state].Render(sb, Util.AddOffset(DrawOffset, location));
             //sb.Draw(AssMan.Get(IAsset.Mask), Util.AddOffset(Util.AddOffset(GetRect(), location), DrawOffset), Color.Blue);
             sb.Draw(AssMan.Get(ItemIcon(heldItem)), new Vector2(100, 100), Color.White);
+            if (!alive)
+            {
+                sb.DrawString(AssMan.victorianFont, killString, new Vector2(700, 400), Color.Red);
+            }
         }
 
         public static IAsset ItemIcon(Item i)
@@ -128,6 +165,9 @@ namespace WolfSim
             switch (i)
             {
                 case Item.Plunger: return IAsset.Plunger;
+                case Item.Matchbox: return IAsset.Matchbox;
+                case Item.Mop: return IAsset.Mop;
+                case Item.Goat: return IAsset.Goat;
                 default: return IAsset.Mask;
             }
         }

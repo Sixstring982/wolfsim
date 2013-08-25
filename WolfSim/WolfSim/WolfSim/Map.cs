@@ -73,11 +73,13 @@ namespace WolfSim
             linkerRooms.Add(new BilliardRoom());
             linkerRooms.Add(new Kitchen());
             linkerRooms.Add(new SittingRoom());
+            linkerRooms.Add(new Lab());
 
             endRooms.Add(new Shed());
-            endRooms.Add(new Lab());
             endRooms.Add(new Study());
             endRooms.Add(new Backyard());
+            endRooms.Add(new Bathroom());
+            endRooms.Add(new MasterBedroom());
         }
 
         public Map()
@@ -137,6 +139,7 @@ namespace WolfSim
             {
                 changeTicks++;
 
+                changeRoom.ArmEntities();
                 if (changeTicks == maxChangeTicks >> 1)
                 {
                     changeRoom.SetPlayerFromRoom(currentRoom);
@@ -177,6 +180,14 @@ namespace WolfSim
                 changeTicks++;
                 StartStatusRender(re.next.name);
             }
+
+            changeRoom.ArmEntities();
+        }
+
+        public void GoToStart()
+        {
+            currentRoom = rootRoom;
+            rootRoom.ResetPlayerPos();
         }
     }
 }

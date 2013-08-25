@@ -60,6 +60,24 @@ namespace WolfSim
 
         public string name = "NOT NAMED";
 
+        public void ArmEntities()
+        {
+            if (HouseScreen.bodyAsset == IAsset.Moon)
+            {
+                foreach (Entity e in entities)
+                {
+                    e.Arm();
+                }
+            }
+            else
+            {
+                foreach (Entity e in entities)
+                {
+                    e.Disarm();
+                }
+            }
+        }
+
         public void SetPlayerPosition(Vector2 v)
         {
             playerPosition = v;
@@ -209,10 +227,10 @@ namespace WolfSim
 
         public void Update(Screen masterScreen, Player p)
         {
-            if (p.alive)
+            if (p.alive && p.GetState() != PlayerState.Eating)
             {
                 bool moved = false;
-                if (KVMA_Keyboard.KeyDown(Keys.W))
+                if (KVMA_Keyboard.UpKey())
                 {
                     SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.N, Player.speed));
                     if (InCollisionBoxes(playerPosition) || OutOfBounds(playerPosition))
@@ -222,7 +240,7 @@ namespace WolfSim
                     moved = true;
                     p.SetState(PlayerState.WalkNorth);
                 }
-                if (KVMA_Keyboard.KeyDown(Keys.S))
+                if (KVMA_Keyboard.DownKey())
                 {
                     SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.S, Player.speed));
                     if (InCollisionBoxes(playerPosition) || OutOfBounds(playerPosition))
@@ -232,7 +250,7 @@ namespace WolfSim
                     moved = true;
                     p.SetState(PlayerState.WalkSouth);
                 }
-                if (KVMA_Keyboard.KeyDown(Keys.A))
+                if (KVMA_Keyboard.LeftKey())
                 {
                     SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.W, Player.speed));
                     if (InCollisionBoxes(playerPosition) || OutOfBounds(playerPosition))
@@ -242,7 +260,7 @@ namespace WolfSim
                     moved = true;
                     p.SetState(PlayerState.WalkWest);
                 }
-                if (KVMA_Keyboard.KeyDown(Keys.D))
+                if (KVMA_Keyboard.RightKey())
                 {
                     SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.E, Player.speed));
                     if (InCollisionBoxes(playerPosition) || OutOfBounds(playerPosition))
@@ -513,6 +531,19 @@ namespace WolfSim
             exitPoints.Add(new RoomExit(200, 400, Direction.S));
             SetBackgroundParams();
 
+            entities.Add(new Mother(new Vector2(249, 97)));
+            entities.Add(new Plant(new Vector2(36, 52)));
+            entities.Add(new Plant(new Vector2(36, 335)));
+            entities.Add(new Plant(new Vector2(267, 335)));
+            entities.Add(new Plant(new Vector2(267, 52)));
+            entities.Add(new Chair(new Vector2(56, 43)));
+            entities.Add(new Chair(new Vector2(79, 43)));
+            entities.Add(new Chair(new Vector2(241, 43)));
+            entities.Add(new Chair(new Vector2(264, 43)));
+            entities.Add(new Pillar(new Vector2(147, 236)));
+
+            SortEntities();
+
             name = "Parlor";
         }
     }
@@ -522,6 +553,7 @@ namespace WolfSim
         public void ResetPlayerPos()
         {
             SetPlayerPosition(new Vector2(319, 418));
+            ArmEntities();
         }
 
         public Foyer()
@@ -541,13 +573,11 @@ namespace WolfSim
             afterTextures.Add(new AfterTexture(IAsset.Foyer_Railing, new Vector2(79, 125)));
             SetBackgroundParams();
 
-            //entities.Add(new Pillar(new Vector2(499, 267)));
-            //entities.Add(new Pillar(new Vector2(199, 267)));
-
-            entities.Add(new Barrel(new Vector2(499, 267)));
-            entities.Add(new Barrel(new Vector2(199, 267)));
+            entities.Add(new Pillar(new Vector2(499, 267)));
+            entities.Add(new Pillar(new Vector2(199, 267)));
 
             ResetPlayerPos();
+            SortEntities();
 
             name = "Foyer";
         }
@@ -565,6 +595,12 @@ namespace WolfSim
             exitPoints.Add(new RoomExit(83, 394, Direction.S));
             SetBackgroundParams();
 
+            entities.Add(new Bookshelf(new Vector2(324, 9)));
+            entities.Add(new Bookshelf(new Vector2(27, 9)));
+            entities.Add(new Pillar(new Vector2(183, 166)));
+
+            SortEntities();
+
             name = "Dining Room";
         }
     }
@@ -581,7 +617,16 @@ namespace WolfSim
             exitPoints.Add(new RoomExit(110, 230, Direction.S));
             SetBackgroundParams();
 
-            name = "Shed";
+            entities.Add(new Barrel(new Vector2(20, 80)));
+            entities.Add(new Barrel(new Vector2(50, 80)));
+            entities.Add(new Barrel(new Vector2(80, 80)));
+            entities.Add(new Barrel(new Vector2(110, 80)));
+            entities.Add(new Barrel(new Vector2(180, 150)));
+            entities.Add(new Barrel(new Vector2(150, 150)));
+            entities.Add(new Barrel(new Vector2(120, 150)));
+            entities.Add(new Barrel(new Vector2(90, 150)));
+
+            name = "Storage Room";
         }
     }
 
@@ -596,6 +641,14 @@ namespace WolfSim
             exitPoints.Add(new RoomExit(310, 216, Direction.E));
             exitPoints.Add(new RoomExit(200, 400, Direction.S));
             SetBackgroundParams();
+
+            entities.Add(new Bookshelf(new Vector2(234, 8)));
+            entities.Add(new Bookshelf(new Vector2(33, 8)));
+            entities.Add(new Chair(new Vector2(81, 49)));
+            entities.Add(new Chair(new Vector2(206, 49)));
+            entities.Add(new EmptyBed(new Vector2(20, 238)));
+
+            SortEntities();
 
             name = "Bedroom";
         }
@@ -612,6 +665,18 @@ namespace WolfSim
             exitPoints.Add(new RoomExit(310, 216, Direction.E));
             exitPoints.Add(new RoomExit(200, 400, Direction.S));
             SetBackgroundParams();
+
+            entities.Add(new Fountain(new Vector2(130, 93)));
+            entities.Add(new Fountain(new Vector2(135, 294)));
+            entities.Add(new Table(new Vector2(112, 169)));
+            entities.Add(new Plant(new Vector2(193, 94)));
+            entities.Add(new Plant(new Vector2(99, 91)));
+            entities.Add(new Plant(new Vector2(101, 297)));
+            entities.Add(new Plant(new Vector2(198, 297)));
+            entities.Add(new Chair(new Vector2(90, 178)));
+            entities.Add(new Chair(new Vector2(204, 185)));
+
+            SortEntities();
 
             name = "Breakfast Nook";
         }
@@ -633,6 +698,9 @@ namespace WolfSim
             entities.Add(new Bookshelf(new Vector2(249, 8)));
             entities.Add(new Bookshelf(new Vector2(201, 8)));
 
+            entities.Add(new Desk(new Vector2(20, 254)));
+            entities.Add(new Confuscious(new Vector2(228, 108)));
+
             SortEntities();
 
             name = "Study";
@@ -651,6 +719,11 @@ namespace WolfSim
             exitPoints.Add(new RoomExit(83, 394, Direction.S));
             SetBackgroundParams();
 
+            entities.Add(new PoolTable(new Vector2(106, 185)));
+            entities.Add(new PoolPanel(new Vector2(60, 3)));
+
+            SortEntities();
+
             name = "Billiard Room";
         }
     }
@@ -664,8 +737,14 @@ namespace WolfSim
             exitPoints.Add(new RoomExit(189, 80, Direction.N));
             exitPoints.Add(new RoomExit(6, 182, Direction.W));
             exitPoints.Add(new RoomExit(390, 182, Direction.E));
-            exitPoints.Add(new RoomExit(83, 394, Direction.S));
+            exitPoints.Add(new RoomExit(260, 394, Direction.S));
             SetBackgroundParams();
+
+            entities.Add(new Bed(new Vector2(20, 80)));
+            entities.Add(new Father(new Vector2(50, 62)));
+            entities.Add(new Bookshelf(new Vector2(324, 9)));
+            entities.Add(new Bookshelf(new Vector2(267, 9)));
+            entities.Add(new Bookshelf(new Vector2(219, 9)));
 
             name = "Master Bedroom";
         }
@@ -683,6 +762,12 @@ namespace WolfSim
             exitPoints.Add(new RoomExit(538, 230, Direction.S));
             SetBackgroundParams();
 
+            entities.Add(new Toilet(new Vector2(289, 160)));
+            entities.Add(new Pillar(new Vector2(140, 12)));
+            entities.Add(new Pillar(new Vector2(479, 12)));
+
+            SortEntities();
+
             name = "Laboratory";
         }
     }
@@ -698,6 +783,8 @@ namespace WolfSim
             exitPoints.Add(new RoomExit(590, 182, Direction.E));
             exitPoints.Add(new RoomExit(538, 230, Direction.S));
             SetBackgroundParams();
+
+            SortEntities();
 
             name = "Kitchen";
         }
@@ -715,6 +802,13 @@ namespace WolfSim
             exitPoints.Add(new RoomExit(538, 230, Direction.S));
             SetBackgroundParams();
 
+            entities.Add(new Couch(new Vector2(300, 27)));
+            entities.Add(new Portrait(new Vector2(216, 1)));
+            entities.Add(new Bookshelf(new Vector2(151, 7)));
+
+            SortEntities();
+
+
             name = "Sitting Room";
         }
     }
@@ -729,11 +823,32 @@ namespace WolfSim
             exitPoints.Add(new RoomExit(10, 130, Direction.W));
             exitPoints.Add(new RoomExit(310, 130, Direction.E));
             exitPoints.Add(new RoomExit(134, 80, Direction.N));
-            
+
+            SortEntities();
 
             SetBackgroundParams();
 
             name = "Back Yard";
+        }
+    }
+
+    class Bathroom : Room
+    {
+        public Bathroom()
+        {
+            this.maxExits = 1;
+            this.backgroundAsset = IAsset.Bathroom;
+            exitPoints.Add(new RoomExit(100, 80, Direction.N));
+            exitPoints.Add(new RoomExit(10, 100, Direction.W));
+            exitPoints.Add(new RoomExit(190, 100, Direction.E));
+            exitPoints.Add(new RoomExit(100, 190, Direction.S));
+            SetBackgroundParams();
+
+            entities.Add(new Toilet(new Vector2(133, 123)));
+            entities.Add(new Barrel(new Vector2(20, 125)));
+            SortEntities();
+
+            name = "Water Closet";
         }
     }
 }

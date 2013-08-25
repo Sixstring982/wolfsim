@@ -70,5 +70,11 @@ namespace WolfSim
                     return new Vector2(v.X, v.Y + pixels);
             }
         }
+
+        public static Vector2 Rotate(Vector2 v, double angle)
+        {
+            double s = Math.Sin(angle), c = Math.Cos(angle);
+            return new Vector2((float)(c * v.X - s * v.Y), (float)(s * v.X + c * v.Y));
+        }
     }
 }

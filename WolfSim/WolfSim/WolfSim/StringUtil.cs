@@ -195,6 +195,68 @@ namespace WolfSim
             }
         };
 
+        private static string[][] Lore = new string[][]
+        {
+            new string[]
+            {
+                "People have said that it is a cursed human who transforms into a hungry animal - a were-creature, ",
+                "perhaps a were-weasel or a were-wombat.  But these people are wrong."
+            },
+            new string[]
+            {
+                "Listen!  I know the real story.  It all came about from a noble experiment gone horribly wrong, a ",
+                "brilliant scientist who wanted to do good."
+            },
+            new string[]
+            {
+                "Professor Fidelia Penrosa Fisher sought a cure for the darkness in our souls.  She devoted her life",
+                "to her elixir.  She hoped to make the first test easy, and so she picked the best and kindest person she knew."
+            },
+            new string[]
+            {
+                "It was a dark and stormy night when Professor Fisher poured the silvery liquid into a flask, and invited",
+                "her friend to drink.  At first, nothing happened."
+            },
+            new string[]
+            {
+                "Poor Fidelia Fisher!  She saw her intelligent and good friend soon descend into cruel ferocity.  Shortly",
+                "thereafter, she was eaten, and thus the only hope for cure for this condition perished."
+            },
+            new string[]
+            {
+                "I hear tell that the poor drinker of that well-intentioned elixir remains oblivious and does not know what",
+                "has happened.  Then, sometimes, a monster from inside overpowers the poor soul.  A savage hunger is loosed on us all!"
+            },
+        };
+
+        private static string[][] FatherDialog = new string[][]
+        {
+            new string[]
+            {
+                "Did you notice how the Willoughby's house is for sale now?  That's because they were all eaten just last week."
+            }
+        };
+
+        private static string[][] MotherDialog = new string[][]
+        {
+            new string[]
+            {
+                "The poor dear really isn't to blame, you know -- It's all becaue of the curse."
+            }
+        };
+
+        private static int LoreNum = 0;
+
+        public static string[] RandomFather()
+        {
+            return FatherDialog[Game1.rand.Next() % FatherDialog.Length];
+        }
+
+        public static string[] RandomMother()
+        {
+            return MotherDialog[Game1.rand.Next() % MotherDialog.Length];
+        }
+
         public static string[] RandomFortune()
         {
             return new string[]{fortunes[Game1.rand.Next() % fortunes.Length]};
@@ -203,6 +265,15 @@ namespace WolfSim
         public static string[] RandomGameFortune()
         {
             return gameFortunes[Game1.rand.Next() % gameFortunes.Length];
+        }
+
+        public static string[] NextLore()
+        {
+            if (LoreNum >= Lore.Length)
+            {
+                LoreNum = 0;
+            }
+            return Lore[LoreNum++];
         }
     }
 }

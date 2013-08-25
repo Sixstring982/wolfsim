@@ -16,7 +16,7 @@ namespace WolfSim
         Screen parent;
         string[] text;
         int drawTicks = 0;
-        int maxDrawTicks = 3;
+        int maxDrawTicks = 2;
         int charsToDraw = 0;
 
         public DialogScreen(Screen parent, string[] text)

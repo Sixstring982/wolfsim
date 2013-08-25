@@ -26,6 +26,31 @@ namespace WolfSim
             return current.IsKeyUp(k);
         }
 
+        public static bool UpKey()
+        {
+            return KeyDown(Keys.W) || KeyDown(Keys.Up);
+        }
+
+        public static bool DownKey()
+        {
+            return KeyDown(Keys.S) || KeyDown(Keys.Down);
+        }
+
+        public static bool LeftKey()
+        {
+            return KeyDown(Keys.A) || KeyDown(Keys.Left);
+        }
+
+        public static bool RightKey()
+        {
+            return KeyDown(Keys.D) || KeyDown(Keys.Right);
+        }
+
+        public static bool ActionKey()
+        {
+            return SemiAuto(Keys.E) || SemiAuto(Keys.Space);
+        }
+
         public static bool SemiAuto(Keys k)
         {
             return current.IsKeyDown(k) && !prev.IsKeyDown(k);

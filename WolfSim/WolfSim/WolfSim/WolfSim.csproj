@@ -109,6 +109,7 @@
   <ItemGroup>
     <Compile Include="Animation.cs" />
     <Compile Include="AssMan.cs" />
+    <Compile Include="ChangeScreen.cs" />
     <Compile Include="DialogScreen.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="HouseScreen.cs" />
