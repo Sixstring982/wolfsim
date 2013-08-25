@@ -23,6 +23,13 @@ namespace WolfSim
             return currentRoom;
         }
 
+        private const int maxChangeTicks = 100;
+        private int changeTicks = 0;
+        private Vector2 changeVec = Vector2.Zero;
+        private Direction changeDir = Direction.N;
+        private Room changeRoom = null;
+        private int ChangeAnimSpeed = 25;
+
         private void FillRoomLists()
         {
             linkerRooms.Clear();
@@ -79,9 +86,62 @@ namespace WolfSim
             }
         }
 
+        public void Update(Player p)
+        {
+            if (changeTicks == 0)
+            {
+                currentRoom.Update(p);
+                if (currentRoom.IsPlayerOnExit())
+                {
+                    ChangeRoom(currentRoom.GetPlayerPosition());
+                }
+            }
+        }
+
+        public void Render(SpriteBatch sb, Player p)
+        {
+            if (changeTicks > 0)
+            {
+                changeTicks++;
+
+                if (changeTicks == maxChangeTicks >> 1)
+                {
+                    changeRoom.SetPlayerFromRoom(currentRoom);
+                    currentRoom = changeRoom;
+                    if (changeDir == Direction.N || changeDir == Direction.S)
+                    {
+                        changeVec.Y = -changeVec.Y;
+                    }
+                    else
+                    {
+                        changeVec.X = -changeVec.X;
+                    }
+                }
+
+                changeVec = Util.MoveDirection(changeVec, changeDir, ChangeAnimSpeed);
+                if (changeVec == Vector2.Zero)
+                {
+                    changeTicks = 0;
+                    changeRoom = null;
+                }
+
+                currentRoom.Render(sb, changeVec, p);
+            }
+            else
+            {
+                currentRoom.Render(sb, Vector2.Zero, p);
+            }
+        }
+
         public void ChangeRoom(Vector2 location)
         {
-            currentRoom = currentRoom.NearestExit(location);
+            if (changeTicks == 0)
+            {
+                RoomExit re = currentRoom.NearestExit(location);
+                changeDir = VecDir.OppositeDir(re.location.dir);
+                changeRoom = re.next;
+                changeTicks++;
+            }
         }
     }
 }

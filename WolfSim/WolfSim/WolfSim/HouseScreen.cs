@@ -13,7 +13,8 @@ namespace WolfSim
 {
     class HouseScreen : Screen
     {
-        Map m = new Map();
+        private Map m = new Map();
+        private Player p = new Player();
 
         public override void Update()
         {
@@ -26,11 +27,14 @@ namespace WolfSim
             {
                 m.ChangeRoom(Util.SubOffset(KVMA_Mouse.Location(), m.GetCurrentRoom().backgroundOrigin));
             }
+
+            m.Update(p);
+            p.Update(m.GetCurrentRoom());
         }
 
         public override void Render(SpriteBatch sb)
         {
-            m.GetCurrentRoom().Render(sb);
+            m.Render(sb, p);
         }
     }
 }

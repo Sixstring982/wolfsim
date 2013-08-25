@@ -55,5 +55,20 @@ namespace WolfSim
         {
             return Math.Sqrt((a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y));
         }
+
+        public static Vector2 MoveDirection(Vector2 v, Direction d, float pixels)
+        {
+            switch (d)
+            {
+                case Direction.N:
+                    return new Vector2(v.X, v.Y - pixels);
+                case Direction.E:
+                    return new Vector2(v.X + pixels, v.Y);
+                case Direction.W:
+                    return new Vector2(v.X - pixels, v.Y);
+                default:
+                    return new Vector2(v.X, v.Y + pixels);
+            }
+        }
     }
 }

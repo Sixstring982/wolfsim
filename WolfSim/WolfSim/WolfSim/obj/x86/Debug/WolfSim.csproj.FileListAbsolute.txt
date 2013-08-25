@@ -14,3 +14,5 @@ C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\fo
 C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\Shed.xnb
 C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\SquareRoom.xnb
 C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\Horizontal.xnb
+C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\WolfmanStillFront.xnb
+C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\railing.xnb

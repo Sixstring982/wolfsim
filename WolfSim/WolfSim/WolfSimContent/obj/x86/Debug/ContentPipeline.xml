@@ -91,6 +91,24 @@
       <Output>C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\Horizontal.xnb</Output>
       <Time>2013-08-24T15:39:33.6045454-06:00</Time>
     </Item>
+    <Item>
+      <Source>Images\WolfmanStillFront.png</Source>
+      <Name>Images\WolfmanStillFront</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\WolfmanStillFront.xnb</Output>
+      <Time>2013-08-24T17:59:38.6024-06:00</Time>
+    </Item>
+    <Item>
+      <Source>Images\railing.png</Source>
+      <Name>Images\railing</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Six\git\wolfsim\WolfSim\WolfSim\WolfSim\bin\x86\Debug\Content\Images\railing.xnb</Output>
+      <Time>2013-08-24T18:38:00.3-06:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <TargetPlatform>Windows</TargetPlatform>

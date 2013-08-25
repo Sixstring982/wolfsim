@@ -11,33 +11,90 @@ using Microsoft.Xna.Framework.Media;
 
 namespace WolfSim
 {
+    class RoomExit
+    {
+        public VecDir location;
+        public Room next;
+
+        public RoomExit(VecDir location)
+        {
+            this.location = location;
+            this.next = null;
+        }
+
+        public RoomExit(float x, float y, Direction d)
+        {
+            this.location = new VecDir(new Vector2(x, y), d);
+        }
+    }
+
     class Room
     {
+        /// <summary>
+        /// Something that will be drawn last in the scene.
+        /// </summary>
+        protected class AfterTexture
+        {
+            public IAsset asset;
+            public Vector2 vector;
+
+            public AfterTexture(IAsset asset, Vector2 vector)
+            {
+                this.asset = asset;
+                this.vector = vector;
+            }
+
+            public void Render(SpriteBatch sb, Vector2 offset)
+            {
+                sb.Draw(AssMan.Get(asset), Util.AddOffset(offset, vector), Color.White);
+            }
+        }
+
         private static int EXITW = 20,
                            EXITH = 48,
                            WALLH = 80;
 
         private static float MOVE_DISTANCE = 20.0f;
 
-        protected class RoomExit
+        protected Vector2 playerPosition = Vector2.Zero;
+
+        public void SetPlayerPosition(Vector2 v)
         {
-            public VecDir location;
-            public Room next;
+            playerPosition = v;
+        }
 
-            public RoomExit(VecDir location)
+        public Vector2 GetPlayerPosition()
+        {
+            return new Vector2(playerPosition.X, playerPosition.Y);
+        }
+        
+        public void SetPlayerFromRoom(Room r)
+        {
+            for (int i = 0; i < exitPoints.Count; i++)
             {
-                this.location = location;
-                this.next = null;
+                if (r == exitPoints[i].next)
+                {
+                    SetPlayerPosition(Util.MoveDirection(exitPoints[i].location.vec, VecDir.OppositeDir(exitPoints[i].location.dir), 50));
+                }
             }
+        }
 
-            public RoomExit(float x, float y, Direction d)
+        public bool IsPlayerOnExit()
+        {
+            for (int i = 0; i < exitPoints.Count; i++)
             {
-                this.location = new VecDir(new Vector2(x, y), d);
+                if (Util.Distance(exitPoints[i].location.vec, playerPosition) < MOVE_DISTANCE)
+                {
+                    return true;
+                }
             }
+            return false;
         }
 
         protected List<VecDir> entityPoints = new List<VecDir>();
         protected List<RoomExit> exitPoints = new List<RoomExit>();
+        protected List<Rectangle> collisionBoxes = new List<Rectangle>();
+        protected List<AfterTexture> afterTextures = new List<AfterTexture>();
         protected IAsset backgroundAsset;
         public Vector2 backgroundOrigin;
         protected int maxExits;
@@ -72,7 +129,7 @@ namespace WolfSim
             return null;
         }
 
-        public Room NearestExit(Vector2 location)
+        public RoomExit NearestExit(Vector2 location)
         {
             RoomExit nearest = null;
             double nearestDist = double.PositiveInfinity;
@@ -87,7 +144,7 @@ namespace WolfSim
                     }
                 }
             }
-            return nearest.next;
+            return nearest;
         }
 
         protected void SetBackgroundParams()
@@ -140,48 +197,106 @@ namespace WolfSim
             return false;
         }
 
-        public void Render(SpriteBatch sb)
+        public void Update(Player p)
         {
-            sb.Draw(AssMan.Get(backgroundAsset), backgroundOrigin, Color.White);
-            RenderExits(sb);
+            if (KVMA_Keyboard.KeyDown(Keys.W))
+            {
+                SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.N, Player.speed));
+                if (InCollisionBoxes(playerPosition) || OutOfBounds(playerPosition))
+                {
+                    SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.S, Player.speed));
+                }
+            }
+            if (KVMA_Keyboard.KeyDown(Keys.S))
+            {
+                SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.S, Player.speed));
+                if (InCollisionBoxes(playerPosition) || OutOfBounds(playerPosition))
+                {
+                    SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.N, Player.speed));
+                }
+            }
+            if (KVMA_Keyboard.KeyDown(Keys.A))
+            {
+                SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.W, Player.speed));
+                if (InCollisionBoxes(playerPosition) || OutOfBounds(playerPosition))
+                {
+                    SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.E, Player.speed));
+                }
+            }
+            if (KVMA_Keyboard.KeyDown(Keys.D))
+            {
+                SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.E, Player.speed));
+                if (InCollisionBoxes(playerPosition) || OutOfBounds(playerPosition))
+                {
+                    SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.W, Player.speed));
+                }
+            }
         }
 
-        private void RenderWall(SpriteBatch sb, Direction d)
+        public bool OutOfBounds(Vector2 v)
+        {
+            return !(v.X > EXITW && v.Y > WALLH && v.X < AssMan.Get(backgroundAsset).Width - EXITW && v.Y < AssMan.Get(backgroundAsset).Height - EXITW);
+        }
+
+        public bool InCollisionBoxes(Vector2 v)
+        {
+            foreach (Rectangle r in collisionBoxes)
+            {
+                if (r.Contains(new Point((int)v.X, (int)v.Y)))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public void Render(SpriteBatch sb, Vector2 offset, Player p)
+        {
+            sb.Draw(AssMan.Get(backgroundAsset), Util.AddOffset(offset, backgroundOrigin), Color.White);
+            RenderExits(sb, offset);
+            p.Render(sb, Util.AddOffset(backgroundOrigin, (Util.AddOffset(offset, playerPosition))));
+
+            foreach (AfterTexture a in afterTextures)
+            {
+                a.Render(sb, Util.AddOffset(backgroundOrigin, offset));
+            }
+        }
+
+        private void RenderWall(SpriteBatch sb, Direction d, Vector2 offset)
         {
             RoomExit[] exits = ExitFilter((e) => e.location.dir == d && e.next != null);
             switch (exits.Length)
             {
                 case 0:
-                    RenderNoExits(sb, d); break;
+                    RenderNoExits(sb, d, offset); break;
                 case 1:
-                    RenderOneExit(sb, exits[0], d); break;
+                    RenderOneExit(sb, exits[0], d, offset); break;
                 case 2:
-                    RenderTwoSimilarExits(sb, exits, d); break;
+                    RenderTwoSimilarExits(sb, exits, d, offset); break;
             }
 
         }
 
-        private void RenderExits(SpriteBatch sb)
+        private void RenderExits(SpriteBatch sb, Vector2 offset)
         {
-            RenderWall(sb, Direction.E);
-            RenderWall(sb, Direction.S);
-            RenderWall(sb, Direction.W);
-            RenderNorthWall(sb);
+            RenderWall(sb, Direction.E, offset);
+            RenderWall(sb, Direction.S, offset);
+            RenderWall(sb, Direction.W, offset);
+            RenderNorthWall(sb, offset);
         }
 
-        private void RenderNorthWall(SpriteBatch sb)
+        private void RenderNorthWall(SpriteBatch sb, Vector2 offset)
         {
             RoomExit[] exits = ExitFilter((e) => e.location.dir == Direction.N && e.next != null);
             Texture2D doorAsset = AssMan.Get(IAsset.Door1);
 
             for (int i = 0; i < exits.Length; i++)
             {
-
-                sb.Draw(doorAsset, Util.AddOffset(backgroundOrigin, new Vector2(exits[i].location.vec.X - (doorAsset.Width >> 1), WALLH - doorAsset.Height)), Color.White);
+                sb.Draw(doorAsset, Util.AddOffset(backgroundOrigin, Util.AddOffset(offset, new Vector2(exits[i].location.vec.X - (doorAsset.Width >> 1), WALLH - doorAsset.Height))), Color.White);
             }
         }
 
-        private void RenderNoExits(SpriteBatch sb, Direction d)
+        private void RenderNoExits(SpriteBatch sb, Direction d, Vector2 offset)
         {
             Rectangle maskRect = new Rectangle(0, WALLH, EXITW, AssMan.Get(backgroundAsset).Height - WALLH);
             if (d == Direction.E)
@@ -194,10 +309,10 @@ namespace WolfSim
             }
 
             maskRect = Util.AddOffset(maskRect, backgroundOrigin);
-            sb.Draw(AssMan.Get(IAsset.Mask), maskRect, Color.Black);
+            sb.Draw(AssMan.Get(IAsset.Mask), Util.AddOffset(maskRect, offset), Color.Black);
         }
 
-        private void RenderOneExit(SpriteBatch sb, RoomExit e, Direction d)
+        private void RenderOneExit(SpriteBatch sb, RoomExit e, Direction d, Vector2 offset)
         {
             Texture2D bgtex = AssMan.Get(backgroundAsset);
             Rectangle lowRect = new Rectangle(0, WALLH, EXITW, (int)(e.location.vec.Y - (EXITH >> 1) - WALLH));
@@ -215,11 +330,11 @@ namespace WolfSim
             lowRect = Util.AddOffset(lowRect, backgroundOrigin);
             highRect = Util.AddOffset(highRect, backgroundOrigin);
 
-            sb.Draw(AssMan.Get(IAsset.Mask), lowRect, Color.Black);
-            sb.Draw(AssMan.Get(IAsset.Mask), highRect, Color.Black);
+            sb.Draw(AssMan.Get(IAsset.Mask), Util.AddOffset(lowRect, offset), Color.Black);
+            sb.Draw(AssMan.Get(IAsset.Mask), Util.AddOffset(highRect, offset), Color.Black);
         }
 
-        private void RenderTwoSimilarExits(SpriteBatch sb, RoomExit[] exits, Direction dir)
+        private void RenderTwoSimilarExits(SpriteBatch sb, RoomExit[] exits, Direction dir, Vector2 offset)
         {
             Texture2D bgtex = AssMan.Get(backgroundAsset);
             Rectangle lowRect, midRect, highRect;
@@ -242,9 +357,9 @@ namespace WolfSim
             midRect = Util.AddOffset(midRect, backgroundOrigin);
             highRect = Util.AddOffset(highRect, backgroundOrigin);
 
-            sb.Draw(AssMan.Get(IAsset.Mask), lowRect, Color.Black);
-            sb.Draw(AssMan.Get(IAsset.Mask), midRect, Color.Black);
-            sb.Draw(AssMan.Get(IAsset.Mask), highRect, Color.Black);
+            sb.Draw(AssMan.Get(IAsset.Mask), Util.AddOffset(lowRect, offset), Color.Black);
+            sb.Draw(AssMan.Get(IAsset.Mask), Util.AddOffset(midRect, offset), Color.Black);
+            sb.Draw(AssMan.Get(IAsset.Mask), Util.AddOffset(highRect, offset), Color.Black);
 
         }
 
@@ -282,9 +397,9 @@ namespace WolfSim
         {
             this.maxExits = 2;
             this.backgroundAsset = IAsset.Room_Vertical;
-            exitPoints.Add(new RoomExit(161, 70, Direction.N));
+            exitPoints.Add(new RoomExit(161, 80, Direction.N));
             exitPoints.Add(new RoomExit(10, 216, Direction.W));
-            exitPoints.Add(new RoomExit(410, 216, Direction.E));
+            exitPoints.Add(new RoomExit(310, 216, Direction.E));
             exitPoints.Add(new RoomExit(200, 400, Direction.S));
             SetBackgroundParams();
         }
@@ -296,14 +411,18 @@ namespace WolfSim
         {
             this.maxExits = 8;
             this.backgroundAsset = IAsset.Room_Foyer;
+            SetPlayerPosition(new Vector2(319, 418));
             exitPoints.Add(new RoomExit(8, 117, Direction.W));
             exitPoints.Add(new RoomExit(8, 380, Direction.W));
-            exitPoints.Add(new RoomExit(91, 52, Direction.N));
-            exitPoints.Add(new RoomExit(211, 45, Direction.N));
-            exitPoints.Add(new RoomExit(365, 42, Direction.N));
-            exitPoints.Add(new RoomExit(512, 45, Direction.N));
+            exitPoints.Add(new RoomExit(91, 80, Direction.N));
+            exitPoints.Add(new RoomExit(211, 80, Direction.N));
+            exitPoints.Add(new RoomExit(365, 80, Direction.N));
+            exitPoints.Add(new RoomExit(512, 80, Direction.N));
             exitPoints.Add(new RoomExit(594, 236, Direction.E));
             exitPoints.Add(new RoomExit(594, 413, Direction.E));
+            collisionBoxes.Add(new Rectangle(81, 160, 16, 154));
+            collisionBoxes.Add(new Rectangle(81, 160, 519, 55));
+            afterTextures.Add(new AfterTexture(IAsset.Foyer_Railing, new Vector2(79, 125)));
             SetBackgroundParams();
         }
     }
@@ -314,7 +433,7 @@ namespace WolfSim
         {
             this.maxExits = 2;
             this.backgroundAsset = IAsset.Room_Square;
-            exitPoints.Add(new RoomExit(189, 41, Direction.N));
+            exitPoints.Add(new RoomExit(189, 80, Direction.N));
             exitPoints.Add(new RoomExit(6, 182, Direction.W));
             exitPoints.Add(new RoomExit(390, 182, Direction.E));
             exitPoints.Add(new RoomExit(83, 394, Direction.S));
@@ -342,9 +461,9 @@ namespace WolfSim
         {
             this.maxExits = 2;
             this.backgroundAsset = IAsset.Room_Vertical;
-            exitPoints.Add(new RoomExit(161, 70, Direction.N));
+            exitPoints.Add(new RoomExit(161, 80, Direction.N));
             exitPoints.Add(new RoomExit(10, 216, Direction.W));
-            exitPoints.Add(new RoomExit(410, 216, Direction.E));
+            exitPoints.Add(new RoomExit(310, 216, Direction.E));
             exitPoints.Add(new RoomExit(200, 400, Direction.S));
             SetBackgroundParams();
         }
@@ -356,9 +475,9 @@ namespace WolfSim
         {
             this.maxExits = 2;
             this.backgroundAsset = IAsset.Room_Vertical;
-            exitPoints.Add(new RoomExit(161, 70, Direction.N));
+            exitPoints.Add(new RoomExit(161, 80, Direction.N));
             exitPoints.Add(new RoomExit(10, 216, Direction.W));
-            exitPoints.Add(new RoomExit(410, 216, Direction.E));
+            exitPoints.Add(new RoomExit(310, 216, Direction.E));
             exitPoints.Add(new RoomExit(200, 400, Direction.S));
             SetBackgroundParams();
         }
@@ -370,7 +489,7 @@ namespace WolfSim
         {
             this.maxExits = 2;
             this.backgroundAsset = IAsset.Room_Square;
-            exitPoints.Add(new RoomExit(189, 41, Direction.N));
+            exitPoints.Add(new RoomExit(189, 80, Direction.N));
             exitPoints.Add(new RoomExit(6, 182, Direction.W));
             exitPoints.Add(new RoomExit(390, 182, Direction.E));
             exitPoints.Add(new RoomExit(83, 394, Direction.S));
@@ -384,7 +503,7 @@ namespace WolfSim
         {
             this.maxExits = 2;
             this.backgroundAsset = IAsset.Room_Square;
-            exitPoints.Add(new RoomExit(189, 41, Direction.N));
+            exitPoints.Add(new RoomExit(189, 80, Direction.N));
             exitPoints.Add(new RoomExit(6, 182, Direction.W));
             exitPoints.Add(new RoomExit(390, 182, Direction.E));
             exitPoints.Add(new RoomExit(83, 394, Direction.S));
@@ -398,7 +517,7 @@ namespace WolfSim
         {
             this.maxExits = 2;
             this.backgroundAsset = IAsset.Room_Horizontal;
-            exitPoints.Add(new RoomExit(101, 43, Direction.N));
+            exitPoints.Add(new RoomExit(101, 80, Direction.N));
             exitPoints.Add(new RoomExit(10, 158, Direction.W));
             exitPoints.Add(new RoomExit(590, 182, Direction.E));
             exitPoints.Add(new RoomExit(538, 230, Direction.S));
@@ -412,7 +531,7 @@ namespace WolfSim
         {
             this.maxExits = 2;
             this.backgroundAsset = IAsset.Room_Horizontal;
-            exitPoints.Add(new RoomExit(101, 43, Direction.N));
+            exitPoints.Add(new RoomExit(101, 80, Direction.N));
             exitPoints.Add(new RoomExit(10, 158, Direction.W));
             exitPoints.Add(new RoomExit(590, 182, Direction.E));
             exitPoints.Add(new RoomExit(538, 230, Direction.S));
@@ -426,7 +545,7 @@ namespace WolfSim
         {
             this.maxExits = 2;
             this.backgroundAsset = IAsset.Room_Horizontal;
-            exitPoints.Add(new RoomExit(101, 43, Direction.N));
+            exitPoints.Add(new RoomExit(101, 80, Direction.N));
             exitPoints.Add(new RoomExit(10, 158, Direction.W));
             exitPoints.Add(new RoomExit(590, 182, Direction.E));
             exitPoints.Add(new RoomExit(538, 230, Direction.S));

@@ -22,18 +22,17 @@ namespace WolfSim
             WalkSouth
         }
 
-        private const float speed = 0.5f;
-
-        private Vector2 position;
+        public const float speed = 3.0f;
+        private Vector2 DrawOffset = new Vector2(-14, -63);
 
         public void Update(Room currentRoom)
         {
 
         }
 
-        public void Render(SpriteBatch sb)
+        public void Render(SpriteBatch sb, Vector2 location)
         {
-
+            sb.Draw(AssMan.Get(IAsset.Player_SouthWest), Util.AddOffset(DrawOffset, location), Color.White);
         }
     }
 }
