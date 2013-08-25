@@ -109,6 +109,7 @@
   <ItemGroup>
     <Compile Include="Animation.cs" />
     <Compile Include="AssMan.cs" />
+    <Compile Include="DialogScreen.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="HouseScreen.cs" />
     <Compile Include="KVMA_Keyboard.cs" />
@@ -120,6 +121,8 @@
     <Compile Include="Game1.cs" />
     <Compile Include="Room.cs" />
     <Compile Include="Screen.cs" />
+    <Compile Include="SplashScreen.cs" />
+    <Compile Include="StringUtil.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="VecDir.cs" />
   </ItemGroup>

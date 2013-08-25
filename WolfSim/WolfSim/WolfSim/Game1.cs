@@ -30,7 +30,7 @@ namespace WolfSim
             screenStack[screenNum++] = s;
         }
 
-        public static Screen PopScreen(Screen s)
+        public static Screen PopScreen()
         {
             return screenStack[screenNum -= 1];
         }
@@ -64,7 +64,7 @@ namespace WolfSim
         {
             base.Initialize();
             AssMan.LoadStaticAssets(Content);
-            PushScreen(new HouseScreen());
+            PushScreen(new SplashScreen());
         }
 
         /// <summary>

@@ -16,6 +16,7 @@ namespace WolfSim
         private List<Room> linkerRooms = new List<Room>();
         private List<Room> endRooms = new List<Room>();
 
+        private Foyer rootRoom;
         private Room currentRoom;
 
         public Room GetCurrentRoom()
@@ -29,6 +30,36 @@ namespace WolfSim
         private Direction changeDir = Direction.N;
         private Room changeRoom = null;
         private int ChangeAnimSpeed = 25;
+
+        private string RoomStatusString = "";
+        private int statusStringLife = 0;
+
+        private void RenderStatusString(SpriteBatch sb)
+        {
+            if (statusStringLife > 0)
+            {
+                statusStringLife += 2;
+                sb.DrawString(AssMan.victorianFont, RoomStatusString, new Vector2(0, 0), Color.White);
+                if (statusStringLife < 255)
+                {
+                    sb.Draw(AssMan.Get(IAsset.Mask), new Rectangle(0, 0, 200, 100), new Color(0, 0, 0, 255 - statusStringLife));
+                }
+                else
+                {
+                    sb.Draw(AssMan.Get(IAsset.Mask), new Rectangle(0, 0, 200, 100), new Color(0, 0, 0, 255 - (512 - statusStringLife)));
+                }
+                if (statusStringLife >= 512)
+                {
+                    statusStringLife = 0;
+                }
+            }
+        }
+
+        private void StartStatusRender(string s)
+        {
+            RoomStatusString = s;
+            statusStringLife = 1;
+        }
 
         private void FillRoomLists()
         {
@@ -45,6 +76,8 @@ namespace WolfSim
 
             endRooms.Add(new Shed());
             endRooms.Add(new Lab());
+            endRooms.Add(new Study());
+            endRooms.Add(new Backyard());
         }
 
         public Map()
@@ -72,7 +105,7 @@ namespace WolfSim
         private void GenerateMap()
         {
             FillRoomLists();
-            currentRoom = new Foyer();
+            currentRoom = rootRoom = new Foyer();
             int[] linkerIo = Util.ShuffledIota(linkerRooms.Count);
             for (int i = 0; i < linkerIo.Length; i++)
             {
@@ -86,11 +119,11 @@ namespace WolfSim
             }
         }
 
-        public void Update(Player p)
+        public void Update(Screen masterScreen, Player p)
         {
             if (changeTicks == 0)
             {
-                currentRoom.Update(p);
+                currentRoom.Update(masterScreen, p);
                 if (currentRoom.IsPlayerOnExit())
                 {
                     ChangeRoom(currentRoom.GetPlayerPosition());
@@ -131,6 +164,7 @@ namespace WolfSim
             {
                 currentRoom.Render(sb, Vector2.Zero, p);
             }
+            RenderStatusString(sb);
         }
 
         public void ChangeRoom(Vector2 location)
@@ -141,6 +175,7 @@ namespace WolfSim
                 changeDir = VecDir.OppositeDir(re.location.dir);
                 changeRoom = re.next;
                 changeTicks++;
+                StartStatusRender(re.next.name);
             }
         }
     }

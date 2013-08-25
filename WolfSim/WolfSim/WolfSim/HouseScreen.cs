@@ -16,6 +16,9 @@ namespace WolfSim
         private Map m = new Map();
         private Player p = new Player();
 
+        int deathPlayTicks = 0;
+        int deathPlays = 0;
+
         public override void Update()
         {
             if (KVMA_Keyboard.SemiAuto(Keys.R))
@@ -28,7 +31,22 @@ namespace WolfSim
                 m.ChangeRoom(Util.SubOffset(KVMA_Mouse.Location(), m.GetCurrentRoom().backgroundOrigin));
             }
 
-            m.Update(p);
+            if (!p.alive)
+            {
+                deathPlayTicks++;
+                if (deathPlayTicks > 30)
+                {
+                    deathPlays++;
+                    deathPlayTicks = 0;
+                    AssMan.Get(SAsset.Death).Play();
+                    if (deathPlays == 5)
+                    {
+                        Game1.PopScreen();
+                    }
+                }
+            }
+
+            m.Update(this, p);
             p.Update(m.GetCurrentRoom());
         }
 

@@ -58,6 +58,8 @@ namespace WolfSim
 
         protected Vector2 playerPosition = Vector2.Zero;
 
+        public string name = "NOT NAMED";
+
         public void SetPlayerPosition(Vector2 v)
         {
             playerPosition = v;
@@ -66,6 +68,11 @@ namespace WolfSim
         public Vector2 GetPlayerPosition()
         {
             return new Vector2(playerPosition.X, playerPosition.Y);
+        }
+
+        private int PlayerBottomY(Player p)
+        {
+            return (int)playerPosition.Y;
         }
         
         public void SetPlayerFromRoom(Room r)
@@ -83,15 +90,18 @@ namespace WolfSim
         {
             for (int i = 0; i < exitPoints.Count; i++)
             {
-                if (Util.Distance(exitPoints[i].location.vec, playerPosition) < MOVE_DISTANCE)
+                if (exitPoints[i].next != null)
                 {
-                    return true;
+                    if (Util.Distance(exitPoints[i].location.vec, playerPosition) < MOVE_DISTANCE)
+                    {
+                        return true;
+                    }
                 }
             }
             return false;
         }
 
-        protected List<VecDir> entityPoints = new List<VecDir>();
+        protected List<Entity> entities = new List<Entity>();
         protected List<RoomExit> exitPoints = new List<RoomExit>();
         protected List<Rectangle> collisionBoxes = new List<Rectangle>();
         protected List<AfterTexture> afterTextures = new List<AfterTexture>();
@@ -197,53 +207,111 @@ namespace WolfSim
             return false;
         }
 
-        public void Update(Player p)
+        public void Update(Screen masterScreen, Player p)
         {
-            bool moved = false;
-            if (KVMA_Keyboard.KeyDown(Keys.W))
+            if (p.alive)
             {
-                SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.N, Player.speed));
-                if (InCollisionBoxes(playerPosition) || OutOfBounds(playerPosition))
-                {
-                    SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.S, Player.speed));
-                }
-                moved = true;
-                p.SetState(PlayerState.WalkNorth);
-            }
-            if (KVMA_Keyboard.KeyDown(Keys.S))
-            {
-                SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.S, Player.speed));
-                if (InCollisionBoxes(playerPosition) || OutOfBounds(playerPosition))
+                bool moved = false;
+                if (KVMA_Keyboard.KeyDown(Keys.W))
                 {
                     SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.N, Player.speed));
+                    if (InCollisionBoxes(playerPosition) || OutOfBounds(playerPosition))
+                    {
+                        SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.S, Player.speed));
+                    }
+                    moved = true;
+                    p.SetState(PlayerState.WalkNorth);
                 }
-                moved = true;
-                p.SetState(PlayerState.WalkSouth);
-            }
-            if (KVMA_Keyboard.KeyDown(Keys.A))
-            {
-                SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.W, Player.speed));
-                if (InCollisionBoxes(playerPosition) || OutOfBounds(playerPosition))
+                if (KVMA_Keyboard.KeyDown(Keys.S))
                 {
-                    SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.E, Player.speed));
+                    SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.S, Player.speed));
+                    if (InCollisionBoxes(playerPosition) || OutOfBounds(playerPosition))
+                    {
+                        SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.N, Player.speed));
+                    }
+                    moved = true;
+                    p.SetState(PlayerState.WalkSouth);
                 }
-                moved = true;
-                p.SetState(PlayerState.WalkWest);
-            }
-            if (KVMA_Keyboard.KeyDown(Keys.D))
-            {
-                SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.E, Player.speed));
-                if (InCollisionBoxes(playerPosition) || OutOfBounds(playerPosition))
+                if (KVMA_Keyboard.KeyDown(Keys.A))
                 {
                     SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.W, Player.speed));
+                    if (InCollisionBoxes(playerPosition) || OutOfBounds(playerPosition))
+                    {
+                        SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.E, Player.speed));
+                    }
+                    moved = true;
+                    p.SetState(PlayerState.WalkWest);
                 }
-                moved = true;
-                p.SetState(PlayerState.WalkEast);
+                if (KVMA_Keyboard.KeyDown(Keys.D))
+                {
+                    SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.E, Player.speed));
+                    if (InCollisionBoxes(playerPosition) || OutOfBounds(playerPosition))
+                    {
+                        SetPlayerPosition(Util.MoveDirection(playerPosition, Direction.W, Player.speed));
+                    }
+                    moved = true;
+                    p.SetState(PlayerState.WalkEast);
+                }
+                if (!moved)
+                {
+                    p.SetState(PlayerState.Idle);
+                }
             }
-            if (!moved)
+
+            List<Entity> newEntities = new List<Entity>();
+            List<int> deadEnts = new List<int>();
+            for(int i = 0; i < entities.Count; i++)
             {
-                p.SetState(PlayerState.Idle);
+                if (!entities[i].Update(newEntities, p, playerPosition))
+                {
+                    deadEnts.Add(i);
+                }
+                if (entities[i].InRange(playerPosition))
+                {
+                    entities[i].DoCollision(masterScreen, p, playerPosition);
+                }
             }
+
+            Entity[] ents = entities.ToArray();
+            foreach (int i in deadEnts)
+            {
+                ents[i] = null;
+            }
+            entities.Clear();
+            for (int i = 0; i < ents.Length; i++)
+            {
+                if (ents[i] != null)
+                {
+                    entities.Add(ents[i]);
+                }
+            }
+
+            foreach (Entity e in newEntities)
+            {
+                entities.Add(e);
+            }
+        }
+
+        protected void SortEntities()
+        {
+            Entity[] ens = entities.ToArray();
+            Entity tmp;
+            bool done = false;
+            while (!done)
+            {
+                done = true;
+                for(int i = 0; i < ens.Length - 1; i++)
+                {
+                    if (ens[i].BottomY() > ens[i + 1].BottomY())
+                    {
+                        done = false;
+                        tmp = ens[i];
+                        ens[i] = ens[i + 1];
+                        ens[i + 1] = tmp;
+                    }
+                }
+            }
+            entities = new List<Entity>(ens);
         }
 
         public bool OutOfBounds(Vector2 v)
@@ -260,18 +328,47 @@ namespace WolfSim
                     return true;
                 }
             }
+            foreach (Entity e in entities)
+            {
+                if (e.CollisionContains(v))
+                {
+                    return true;
+                }
+            }
             return false;
         }
 
         public void Render(SpriteBatch sb, Vector2 offset, Player p)
         {
+            bool renderedPlayer = false;
             sb.Draw(AssMan.Get(backgroundAsset), Util.AddOffset(offset, backgroundOrigin), Color.White);
             RenderExits(sb, offset);
-            p.Render(sb, Util.AddOffset(backgroundOrigin, (Util.AddOffset(offset, playerPosition))));
+
+            for (int i = 0; i < entities.Count; i++)
+            {
+                if (entities[i].BottomY() > PlayerBottomY(p) && !renderedPlayer)
+                {
+                    renderedPlayer = true;
+                    p.Render(sb, Util.AddOffset(backgroundOrigin, (Util.AddOffset(offset, playerPosition))));
+                }
+                entities[i].Render(sb, Util.AddOffset(backgroundOrigin, offset));
+            }
+            if (!renderedPlayer)
+            {
+                p.Render(sb, Util.AddOffset(backgroundOrigin, (Util.AddOffset(offset, playerPosition))));
+            }
 
             foreach (AfterTexture a in afterTextures)
             {
                 a.Render(sb, Util.AddOffset(backgroundOrigin, offset));
+            }
+
+            foreach (Entity e in entities)
+            {
+                if (e.InRange(playerPosition))
+                {
+                    e.RenderActivityString(sb, Util.AddOffset(playerPosition, Util.AddOffset(backgroundOrigin, offset)));
+                }
             }
         }
 
@@ -415,16 +512,22 @@ namespace WolfSim
             exitPoints.Add(new RoomExit(310, 216, Direction.E));
             exitPoints.Add(new RoomExit(200, 400, Direction.S));
             SetBackgroundParams();
+
+            name = "Parlor";
         }
     }
 
     class Foyer : Room
     {
+        public void ResetPlayerPos()
+        {
+            SetPlayerPosition(new Vector2(319, 418));
+        }
+
         public Foyer()
         {
             this.maxExits = 8;
             this.backgroundAsset = IAsset.Room_Foyer;
-            SetPlayerPosition(new Vector2(319, 418));
             exitPoints.Add(new RoomExit(8, 117, Direction.W));
             exitPoints.Add(new RoomExit(8, 380, Direction.W));
             exitPoints.Add(new RoomExit(91, 80, Direction.N));
@@ -437,6 +540,16 @@ namespace WolfSim
             collisionBoxes.Add(new Rectangle(81, 160, 519, 55));
             afterTextures.Add(new AfterTexture(IAsset.Foyer_Railing, new Vector2(79, 125)));
             SetBackgroundParams();
+
+            //entities.Add(new Pillar(new Vector2(499, 267)));
+            //entities.Add(new Pillar(new Vector2(199, 267)));
+
+            entities.Add(new Barrel(new Vector2(499, 267)));
+            entities.Add(new Barrel(new Vector2(199, 267)));
+
+            ResetPlayerPos();
+
+            name = "Foyer";
         }
     }
 
@@ -451,6 +564,8 @@ namespace WolfSim
             exitPoints.Add(new RoomExit(390, 182, Direction.E));
             exitPoints.Add(new RoomExit(83, 394, Direction.S));
             SetBackgroundParams();
+
+            name = "Dining Room";
         }
     }
 
@@ -460,11 +575,13 @@ namespace WolfSim
         {
             this.maxExits = 1;
             this.backgroundAsset = IAsset.Room_Shed;
-            exitPoints.Add(new RoomExit(117, 43, Direction.N));
+            exitPoints.Add(new RoomExit(117, 80, Direction.N));
             exitPoints.Add(new RoomExit(10, 157, Direction.W));
             exitPoints.Add(new RoomExit(230, 157, Direction.E));
             exitPoints.Add(new RoomExit(110, 230, Direction.S));
             SetBackgroundParams();
+
+            name = "Shed";
         }
     }
 
@@ -479,6 +596,8 @@ namespace WolfSim
             exitPoints.Add(new RoomExit(310, 216, Direction.E));
             exitPoints.Add(new RoomExit(200, 400, Direction.S));
             SetBackgroundParams();
+
+            name = "Bedroom";
         }
     }
 
@@ -493,6 +612,30 @@ namespace WolfSim
             exitPoints.Add(new RoomExit(310, 216, Direction.E));
             exitPoints.Add(new RoomExit(200, 400, Direction.S));
             SetBackgroundParams();
+
+            name = "Breakfast Nook";
+        }
+    }
+
+    class Study : Room
+    {
+        public Study()
+        {
+            this.maxExits = 1;
+            this.backgroundAsset = IAsset.Room_Vertical;
+            exitPoints.Add(new RoomExit(161, 80, Direction.N));
+            exitPoints.Add(new RoomExit(10, 216, Direction.W));
+            exitPoints.Add(new RoomExit(310, 216, Direction.E));
+            exitPoints.Add(new RoomExit(200, 400, Direction.S));
+            SetBackgroundParams();
+
+            entities.Add(new Bookshelf(new Vector2(33, 8)));
+            entities.Add(new Bookshelf(new Vector2(249, 8)));
+            entities.Add(new Bookshelf(new Vector2(201, 8)));
+
+            SortEntities();
+
+            name = "Study";
         }
     }
 
@@ -507,6 +650,8 @@ namespace WolfSim
             exitPoints.Add(new RoomExit(390, 182, Direction.E));
             exitPoints.Add(new RoomExit(83, 394, Direction.S));
             SetBackgroundParams();
+
+            name = "Billiard Room";
         }
     }
 
@@ -521,6 +666,8 @@ namespace WolfSim
             exitPoints.Add(new RoomExit(390, 182, Direction.E));
             exitPoints.Add(new RoomExit(83, 394, Direction.S));
             SetBackgroundParams();
+
+            name = "Master Bedroom";
         }
     }
 
@@ -535,6 +682,8 @@ namespace WolfSim
             exitPoints.Add(new RoomExit(590, 182, Direction.E));
             exitPoints.Add(new RoomExit(538, 230, Direction.S));
             SetBackgroundParams();
+
+            name = "Laboratory";
         }
     }
 
@@ -549,6 +698,8 @@ namespace WolfSim
             exitPoints.Add(new RoomExit(590, 182, Direction.E));
             exitPoints.Add(new RoomExit(538, 230, Direction.S));
             SetBackgroundParams();
+
+            name = "Kitchen";
         }
     }
 
@@ -563,6 +714,26 @@ namespace WolfSim
             exitPoints.Add(new RoomExit(590, 182, Direction.E));
             exitPoints.Add(new RoomExit(538, 230, Direction.S));
             SetBackgroundParams();
+
+            name = "Sitting Room";
+        }
+    }
+
+    class Backyard : Room
+    {
+        public Backyard()
+        {
+            this.maxExits = 1;
+            this.backgroundAsset = IAsset.Room_Backyard;
+            exitPoints.Add(new RoomExit(150, 190, Direction.S));
+            exitPoints.Add(new RoomExit(10, 130, Direction.W));
+            exitPoints.Add(new RoomExit(310, 130, Direction.E));
+            exitPoints.Add(new RoomExit(134, 80, Direction.N));
+            
+
+            SetBackgroundParams();
+
+            name = "Back Yard";
         }
     }
 }
